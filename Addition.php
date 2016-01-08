@@ -1,7 +1,7 @@
 <?php
 //require_once "nusoap.php";
 require_once "class.phpwsdl.php";
-
+PhpWsdl::RunQuickMode();
 class addition{
 	public function somme($x,$y){
 		return $x+$y; 	
@@ -13,10 +13,8 @@ $options= array(
 );
 
 //service
-$soap_server = new SoapServer(Null,$options); //start server
-//$soap_server -> set_function('somme'); //assignement de la fonction
-$soap_server->setClass('addition')
-$soap_server -> handle();
+$server = new SoapServer(Null,$options); //start server
+//$soap_server -> setFunction('somme'); //assignement de la fonction
+$server->setClass('addition');
+$server->handle();
 ?>
-
-
