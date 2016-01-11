@@ -8,8 +8,8 @@ class addition{
 	}
 }
 $options= array( 
-	//'location' => 'http://localhost/chaki/Addition.php',
-	'uri'=> 'http://localhost/chaki/' //adresse
+	'location' => 'http://172.17.50.155/chaki/Addition.php', //localhost
+	'uri'=> 'http://172.17.50.155/chaki/' //adresse
 );
 
 //service
