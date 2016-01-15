@@ -5,7 +5,9 @@
 addition 2 entiers
 
 Online WSDL 1.1 SOAP generator 0.2
+
 Chaki Abderrazak 
+
 -->
 <definitions xmlns:tns="us.world_corp.my_soap_forum.wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="us.world_corp.my_soap_forum.xsd" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" name="addition 2 entiers" targetNamespace="us.world_corp.my_soap_forum.wsdl">
 <!--  definition of datatypes  -->

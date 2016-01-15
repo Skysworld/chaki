@@ -8,7 +8,6 @@
 	
 	$options= array( 'location' => 'http://172.17.50.155/WebService/Addition.php', //localhost
 					 'uri'=> 'http://172.17.50.155/WebService/' //adresse
-	);
 
 	//service
 	$server = new SoapServer(Null,$options); //start server
