@@ -9,21 +9,19 @@
   xmlns='http://schemas.xmlsoap.org/wsdl/'> 
 
 	<message name='getResultRequest'> 
-	  <part name='operation' type='xsd:string'/>
 	  <part name='integer1' type='xsd:int'/>
 	  <part name='integer2' type='xsd:int'/>
-	  <part name='bouboul' type='xsd:bool'/>
 	</message> 
 	<message name='getResultResponse'> 
-	  <part name='result' type='xsd:string'/> 
+	  <part name='result' type='xsd:int'/> 
 	</message> 
 	
 	<portType name='getResultPortType'> 
-	  <operation name='getResult'> 
+	  <operation name='add'> 
 	    <input message='tns:getResultRequest'/> 
 	    <output message='tns:getResultResponse'/> 
 	  </operation>
-	  <operation name='getResult2'> 
+	  <operation name='substract'> 
 	    <input message='tns:getResultRequest'/> 
 	    <output message='tns:getResultResponse'/> 
 	  </operation>
@@ -35,8 +33,8 @@
 	
 	<binding name='getResultBinding' type='tns:getResultPortType'> 
 	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/> 
-	  <operation name='getResult'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#getResult'/> 
+	  <operation name='add'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#add'/> 
 	    <input> 
 	      <soap:body use='encoded' namespace='urn:xmethods-delayed-calcul' 
 	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
@@ -46,8 +44,8 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>
-	  <operation name='getResult2'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#getResult2'/> 
+	  <operation name='substract'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#substract'/> 
 	    <input> 
 	      <soap:body use='encoded' namespace='urn:xmethods-delayed-calcul' 
 	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
@@ -57,17 +55,7 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>
-	  <operation name='getResult3'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#getResult3'/> 
-	    <input> 
-	      <soap:body use='encoded' namespace='urn:xmethods-delayed-calcul' 
-	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
-	    </input> 
-	    <output> 
-	      <soap:body use='encoded' namespace='urn:xmethods-delayed-calcul' 
-	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
-	    </output> 
-	  </operation> 	  
+
 	</binding> 
 	
 	<service name='getResultService'> 

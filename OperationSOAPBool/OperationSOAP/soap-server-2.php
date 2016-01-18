@@ -16,55 +16,33 @@ header("Refresh: $delai;"); // permet de faire un refresh
 //require_once('base-de-donnee.php');
  
  //Addition
-function getResult($operation, $integer1, $integer2) {
-	$result = 0;
-	
-	if ($operation != "add") {
-	  throw new SoapFault("Server", "Veuillez utiliser une methode d'operation valable (add).");
-	} 
-	if (!$integer1 || !$integer2) {
-	  throw new SoapFault("Server", "Veuillez indiquer 2 entiers.");
-	} 
-	if ($operation == "add") {
-	  $result = $integer1 + $integer2;
-	}	
+function add( $integer1, $integer2) {
+
+	$result = $integer1 + $integer2;
+	  
 	return $result; 
 }  
 
 //soustraction
-function getResult2($operation, $integer1, $integer2) {
-	$result = 0;
+function substract( $integer1, $integer2) {
+
+	$result = $integer1 -$integer2;
 	
-	if ($operation != "substract") {
-	  throw new SoapFault("Server", "Veuillez utiliser une methode d'operation valable (substract).");
-	} 
-	if (!$integer1 || !$integer2) {
-	  throw new SoapFault("Server", "Veuillez indiquer 2 entiers.");
-	} 
-	if ($operation == "substract") {
-	  $result = $integer1 -$integer2;
-	}
 	return $result; 
 } 
 
 //boolean
-function getResult3($operation, $bouboul) {
-	$result = false;
-	
-	if ($operation != "etat") {
-	  throw new SoapFault("Server", "Veuillez utiliser une methode d'operation valable (etat).");
-	} 
+/*function getResult3($bouboul) {
 
-	if ($operation == "etat") {
-	  if($bouboul = true){
+	if($bouboul = true){
 		$result = false;
-	  }
-	  else{
+	}
+	else{
 		$result = true;  
-	  }
-	}	
+	}
+	
 	return $result; 
-}
+}*/
 
 // Désactivation du cache WSDL
 ini_set("soap.wsdl_cache_enabled", "0");  
@@ -75,9 +53,8 @@ ini_set("soap.wsdl_cache_enabled", "0");
 try { 
   $server = new SoapServer('operation.wsdl');
   // On ajoute la méthode "getResult" que le serveur va gérer
-  $server->addFunction("getResult"); 
-  $server->addFunction("getResult2");
-  $server->addFunction("getResult3");
+  $server->addFunction("add"); 
+  $server->addFunction("substract");
 } catch (Exception $e) {
   echo 'erreur'.$e;
 }
