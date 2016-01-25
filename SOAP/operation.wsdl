@@ -1,0 +1,46 @@
+<?xml version ='1.0' encoding ='UTF-8' ?> 
+<definitions name='soap-server' 
+  targetNamespace='http://172.17.50.155/SOAP/soap-server.php' 
+  xmlns:tns='http://172.17.50.155/SOAP/soap-server.php' 
+  xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
+  xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
+  xmlns:soapenc='http://schemas.xmlsoap.org/soap/encoding/' 
+  xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' 
+  xmlns='http://schemas.xmlsoap.org/wsdl/'> 
+
+	<message name='GetEtatRequest'> 
+	  <part name='bouboul' type='xsd:int'/>
+	</message> 
+	<message name='GetEtatResponse'> 
+	  <part name='result' type='xsd:int'/> 
+	</message> 
+	
+	<portType name='GetEtatPortType'> 
+	  <operation name='etat'> 
+	    <input message='tns:GetEtatRequest'/> 
+	    <output message='tns:GetEtatResponse'/> 
+	  </operation>  	  
+	</portType> 
+	
+	<binding name='GetEtatBinding' type='tns:GetEtatPortType'> 
+	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/> 
+	  <operation name='etat'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#etat'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+	  </operation>
+
+	</binding> 
+	
+	<service name='GetEtatService'> 
+	  <port name='GetEtatPort' binding='GetEtatBinding'> 
+	    <soap:address location='http://172.17.50.155/SOAP/soap-server.php'/> 
+	  </port> 
+	</service> 
+</definitions>
