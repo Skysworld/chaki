@@ -1,7 +1,7 @@
 <?xml version ='1.0' encoding ='UTF-8' ?> 
-<definitions name='soap-server' 
-  targetNamespace='http://172.17.50.155/SOAP/soap-server.php' 
-  xmlns:tns='http://172.17.50.155/SOAP/soap-server.php' 
+<definitions name='server' 
+  targetNamespace='http://172.17.50.155/SOAP/server.php' 
+  xmlns:tns='http://172.17.50.155/SOAP/server.php' 
   xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
   xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
   xmlns:soapenc='http://schemas.xmlsoap.org/soap/encoding/' 
@@ -9,12 +9,12 @@
   xmlns='http://schemas.xmlsoap.org/wsdl/'> 
 
 	<message name='GetEtatRequest'> 
-	  <part name='Prise' type='xsd:int'/>
-	  <part name='Branche' type='xsd:int'/>
-	  <part name='Modif' type='xsd:boolean'/>
+	  <part name='Identifiant' type='xsd:string'/>
+	  <part name='Mac' type='xsd:string'/>
+	  <part name='Broche' type='xsd:array'/>
 	</message> 
 	<message name='GetEtatResponse'> 
-	  <part name='resultat' type='xsd:boolean'/> 
+	  <part name='resultat' type='xsd:string'/> 
 	</message> 
 	
 	<portType name='GetEtatPortType'> 
@@ -42,7 +42,7 @@
 	
 	<service name='GetEtatService'> 
 	  <port name='GetEtatPort' binding='GetEtatBinding'> 
-	    <soap:address location='http://172.17.50.155/SOAP/soap-server-2.php'/> 
+	    <soap:address location='http://172.17.50.155/webservice/server.php'/> 
 	  </port> 
 	</service> 
 </definitions>
