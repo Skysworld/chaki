@@ -23,24 +23,22 @@ function authentification($Id,$Password){
 			die('Erreur : '.$e->getMessage());
 		}
 		
-		$sql="SELECT Mac FROM identifiant, prise WHERE Identi='$Id' AND Password='$Password' AND identifiant.Identi=prise.Identi";
-		//$sql="SELECT Mac FROM identifiant, prise WHERE Identi='$Id' AND Password='$Password' AND Identi.identifiant=Identi.prise";
-		//$sql="SELECT Identi FROM identifiant WHERE Identi='$Id' AND Password='$Password' ";
+		$sql="SELECT Mac FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password'";
 		
 		//$requete = $bdd->query("SELECT Identi FROM identifiant WHERE Identi='$Id' AND Password='$Password'");
 		$requete = $bdd->query($sql);
-		
+		  //  if ($login=="toto" && $password=="titi")
 		if ($requete){
-			//echo 'Bien venu $Id';
-			//$result=mysql_query($requete);
-			//return $result;
-			return $Id;
+			 
+			$result=mysql_query($requete);
+			return $requete;
+			//return 'Bienvenu';
 		}
 		else{
 			//la selection dans la base de donnée se fait bien
-			echo 'erreur d identification';
+		//	echo 
 
-			return $Password;
+			return 'erreur d identification';
 			//$result=mysql_query($requete);
 
 		}

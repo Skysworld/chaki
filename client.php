@@ -17,16 +17,18 @@
 		echo $client->etat($Identifiant, $Mac, $Broche); */
 
 		echo "<br> <br> <br> ";
-		$Id ='Massard';
+		$Id ='vert';
 		$Password='123';
 		echo "Demande de connexion : ";
 		echo $client->authentification($Id, $Password); 
 		
 		echo "<br> <br> <br> ";
-		$Id ='2Massard';
-		$Password='123';
-		echo "Demande de connexion : ";
+		$Id ='bleu';
+		$Password='123456';
+		echo "Demande de connexion : ";		
 		echo $client->authentification($Id, $Password);
+
+
 		
 			
 	} catch (SoapFault $exception) { 

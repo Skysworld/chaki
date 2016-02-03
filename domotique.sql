@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mer 03 Février 2016 à 22:34
+-- Généré le :  Jeu 04 Février 2016 à 00:47
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `identifiant` (
 --
 
 INSERT INTO `identifiant` (`Identi`, `Password`) VALUES
+('bleu', '123456'),
 ('chose', '321'),
 ('Massard', '123');
 
@@ -47,7 +48,7 @@ INSERT INTO `identifiant` (`Identi`, `Password`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `prise` (
-  `Identi` varchar(20) NOT NULL COMMENT 'Nom de la prise',
+  `Identity` varchar(20) NOT NULL COMMENT 'Nom de la prise',
   `Mac` varchar(48) NOT NULL COMMENT 'Adresse mac',
   `IDWeb` int(11) NOT NULL,
   `EtatBool1` tinyint(1) NOT NULL COMMENT 'Etats des prises ',
@@ -55,18 +56,28 @@ CREATE TABLE IF NOT EXISTS `prise` (
   `EtatBool3` tinyint(1) NOT NULL,
   `EtatBool4` tinyint(1) NOT NULL,
   `EtatBool5` tinyint(1) NOT NULL,
-  PRIMARY KEY (`Mac`)
+  PRIMARY KEY (`Mac`),
+  KEY `Identi` (`Identity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table d''identification de la prise';
 
 --
 -- Contenu de la table `prise`
 --
 
-INSERT INTO `prise` (`Identi`, `Mac`, `IDWeb`, `EtatBool1`, `EtatBool2`, `EtatBool3`, `EtatBool4`, `EtatBool5`) VALUES
-('Massard', 'a4:a4:a4:c4:c4', 0, 0, 0, 0, 0, 0),
-('test', 'b4:b4:a4:x1', 0, 1, 1, 1, 1, 1),
+INSERT INTO `prise` (`Identity`, `Mac`, `IDWeb`, `EtatBool1`, `EtatBool2`, `EtatBool3`, `EtatBool4`, `EtatBool5`) VALUES
+('bleu', '41:45:pm', 0, 1, 1, 0, 0, 1),
 ('Massard', 'b4:b4:b4', 0, 0, 0, 0, 0, 0),
-('test', 'b4:b4:b4:x1', 0, 1, 1, 1, 1, 1);
+('chose', 'b4:b4:b4:x1', 0, 1, 1, 1, 1, 1);
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `prise`
+--
+ALTER TABLE `prise`
+  ADD CONSTRAINT `prise_ibfk_1` FOREIGN KEY (`Identity`) REFERENCES `identifiant` (`Identi`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
