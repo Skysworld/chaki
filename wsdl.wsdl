@@ -9,22 +9,33 @@
   xmlns='http://schemas.xmlsoap.org/wsdl/'> 
 
 	<message name='GetEtatRequest'> 
-	  <part name='Identifiant' type='xsd:string'/>
+	  <part name='Identification' type='xsd:string'/>
 	  <part name='Mac' type='xsd:string'/>
 	  <part name='Broche' type='xsd:array'/>
 	</message> 
 	<message name='GetEtatResponse'> 
 	  <part name='resultat' type='xsd:string'/> 
 	</message> 
+	<message name='GetAuthRequest'> 
+	  <part name='Id' type='xsd:string'/>
+	  <part name='Password' type='xsd:string'/>
+	</message> 
+	<message name='GetAuthResponse'> 
+	  <part name='result' type='xsd:string'/>
+	</message> 
 	
-	<portType name='GetEtatPortType'> 
+	<portType name='GetServerPortType'> 
 	  <operation name='etat'> 
 	    <input message='tns:GetEtatRequest'/> 
 	    <output message='tns:GetEtatResponse'/> 
-	  </operation>  	  
+	  </operation> 
+	  <operation name='authentification'> 
+	    <input message='tns:GetAuthRequest'/> 
+	    <output message='tns:GetAuthResponse'/> 
+	  </operation>
 	</portType> 
 	
-	<binding name='GetEtatBinding' type='tns:GetEtatPortType'> 
+	<binding name='GetServerBinding' type='tns:GetServerPortType'> 
 	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/> 
 	  <operation name='etat'> 
 	    <soap:operation soapAction='urn:xmethods-delayed-quotes#etat'/> 
@@ -37,12 +48,22 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>
-
+	  <operation name='authentification'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#authentification'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+	  </operation>
 	</binding> 
 	
-	<service name='GetEtatService'> 
-	  <port name='GetEtatPort' binding='GetEtatBinding'> 
-	    <soap:address location='http://172.17.50.155/webservice/server.php'/> 
+	<service name='GeServerService'> 
+	  <port name='GetServerPort' binding='GetServerBinding'> 
+	    <soap:address location='http://localhost/webservice/server.php'/> 
 	  </port> 
 	</service> 
 </definitions>
