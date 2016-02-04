@@ -8,12 +8,12 @@
   xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' 
   xmlns='http://schemas.xmlsoap.org/wsdl/'> 
 
-	<message name='GetEtatRequest'> 
+	<message name='GetModificationRequest'> 
 	  <part name='Identification' type='xsd:string'/>
 	  <part name='Mac' type='xsd:string'/>
 	  <part name='Broche' type='xsd:array'/>
 	</message> 
-	<message name='GetEtatResponse'> 
+	<message name='GetModificationResponse'> 
 	  <part name='resultat' type='xsd:string'/> 
 	</message> 
 	<message name='GetAuthRequest'> 
@@ -25,9 +25,9 @@
 	</message> 
 	
 	<portType name='GetServerPortType'> 
-	  <operation name='etat'> 
-	    <input message='tns:GetEtatRequest'/> 
-	    <output message='tns:GetEtatResponse'/> 
+	  <operation name='modification'> 
+	    <input message='tns:GetModificationRequest'/> 
+	    <output message='tns:GetModificationResponse'/> 
 	  </operation> 
 	  <operation name='authentification'> 
 	    <input message='tns:GetAuthRequest'/> 
@@ -37,8 +37,8 @@
 	
 	<binding name='GetServerBinding' type='tns:GetServerPortType'> 
 	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/> 
-	  <operation name='etat'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#etat'/> 
+	  <operation name='modification'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Modification'/> 
 	    <input> 
 	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
 	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
