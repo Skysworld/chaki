@@ -5,7 +5,7 @@ header("Refresh: 2;");
 
 function base_de_donnee(){
 	try{
-		//Connexion Ã  my sql
+		//Connexion à my sql
 		mysql_connect("localhost", "root", "");
 		mysql_select_db("domotique");
 	}catch (Exception $e){
@@ -19,19 +19,15 @@ function authentification($Id,$Password){
 	base_de_donnee();
 	try{
 		// traitement d'une requete sql
-		$reponse = mysql_query("SELECT * FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' ORDER BY Mac");
+		$reponse2 = mysql_query("SELECT Mac FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' AND IDWeb=1 ");
 		if(mysql_num_rows($reponse)==0)
 		{
 			return '';
 		}
-		else{
-			$tableau = array();
-			$i = 0;
-			while($row=mysql_fetch_assoc($reponse)){
-				$tableau[$i]=$row[Mac];
-				$i ++;							
+		else{				
+			while($row=mysql_fetch_assoc($reponse2)){
+			return $row[0];
 			}
-			return  $tableau;
 		}
 		
 	}catch (Exception $a){
@@ -43,22 +39,17 @@ function authentification2($Id,$Password){
 	base_de_donnee();
 	try{
 		// traitement d'une requete sql
-		$reponse = mysql_query("SELECT * FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' ORDER BY Mac");
-		if(mysql_num_rows($reponse)==0)
+		$reponse1 = mysql_query("SELECT Mac FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' AND IDWeb=2 ");
+
+		if(mysql_num_rows($reponse1)==0 AND mysql_num_rows($reponse2)==0)
 		{
 			return '';
 		}
 		else{
-			$tableau = array();
-			$i = 0;
-			while($row=mysql_fetch_assoc($reponse)){
-				$tableau[$i]=$row[Mac];
-				$i ++;	
-				return $row[Mac];
+			while($row=mysql_fetch_assoc($reponse1)){
+			return $row[Mac];	
 			}
-			return  $tableau;
 		}
-		
 	}catch (Exception $a){
 		die ('Erreur:'.$a->getMessage());
 	}
@@ -80,15 +71,15 @@ function modification($Identifiant,$Mac,$Broche) {
 }
 
 
-// DÃ©sactivation du cache WSDL
+// Désactivation du cache WSDL
 ini_set("soap.wsdl_cache_enabled", "0");  
  
 // Catch l'erreur si l'instanciation la classe SoapServer
-// Ã©choue, on retourne l'erreur
+// échoue, on retourne l'erreur
 try {
 // APPEL DE LA WSDL
   $server = new SoapServer('wsdl.wsdl');
-  // On ajoute les mÃ©thodes que le serveur va gÃ©rer
+  // On ajoute les méthodes que le serveur va gérer
   $server->addFunction("modification"); 
   $server->addFunction("authentification"); 
   $server->addFunction("base_de_donnee");
@@ -96,7 +87,7 @@ try {
   echo 'erreur'.$e;
 }
 
-// Si l'appel provient d'une requÃªte POST (Web Service)
+// Si l'appel provient d'une requête POST (Web Service)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // On lance le serveur SOAP
   $server->handle();
