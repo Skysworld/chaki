@@ -3,7 +3,7 @@
 // permet de faire un refresh automatique
 header("Refresh: 2;"); 
 
-function base_de_donnee(){
+function Base_de_donnee(){
 	try{
 		//Connexion à my sql
 		mysql_connect("localhost", "root", "");
@@ -14,33 +14,9 @@ function base_de_donnee(){
 	}
 }
 
-function authentification($Id,$Password){
+function Authentification($Id,$Password){
 	//appel a la fonction de base de donnee
-	base_de_donnee();
-	try{
-		// traitement d'une requete sql
-		$reponse = mysql_query("SELECT * FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' ORDER BY Mac");
-		if(mysql_num_rows($reponse)==0)
-		{
-			return '';
-		}
-		else{
-			$tableau = array();
-			$i = 0;
-			while($row=mysql_fetch_assoc($reponse)){
-				$tableau[$i]=$row[Mac];
-				$i ++;							
-			}
-			return  $tableau;
-		}
-		
-	}catch (Exception $a){
-		die ('Erreur:'.$a->getMessage());
-	}
-}
-function authentification2($Id,$Password){
-	//appel a la fonction de base de donnee
-	base_de_donnee();
+	Base_de_donnee();
 	try{
 		// traitement d'une requete sql
 		$reponse = mysql_query("SELECT * FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' ORDER BY Mac");
@@ -54,9 +30,10 @@ function authentification2($Id,$Password){
 			while($row=mysql_fetch_assoc($reponse)){
 				$tableau[$i]=$row[Mac];
 				$i ++;	
-				return $row[Mac];
+			 //return $row[Mac];
 			}
 			return  $tableau;
+			
 		}
 		
 	}catch (Exception $a){
@@ -64,9 +41,9 @@ function authentification2($Id,$Password){
 	}
 }
 
-function modification($Identifiant,$Mac,$Broche) {
+function Modification($Identifiant,$Mac,$Broche) {
 	//appel a la fonction de base de donnee
-	base_de_donnee();
+	Base_de_donnee();
 
 	try{
 	//$requete = $bdd->query("INSERT INTO prise(Identifiant,Mac, EtatBool1, EtatBool2, EtatBool3,EtatBool4, EtatBool5, date) Value('$Identifiant','$Mac','$Broche[0]','$Broche[1]','$Broche[2]','$Broche[3]','$Broche[4]')");
@@ -87,10 +64,10 @@ ini_set("soap.wsdl_cache_enabled", "0");
 // échoue, on retourne l'erreur
 try {
 // APPEL DE LA WSDL
-  $server = new SoapServer('wsdl.wsdl');
+  $server = new SoapServer('array2.wsdl');
   // On ajoute les méthodes que le serveur va gérer
-  $server->addFunction("modification"); 
-  $server->addFunction("authentification"); 
+  $server->addFunction("Modification"); 
+  $server->addFunction("Authentification"); 
   $server->addFunction("base_de_donnee");
 }catch (Exception $e){
   echo 'erreur'.$e;

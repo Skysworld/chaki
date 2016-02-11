@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 04 Février 2016 à 00:47
+-- Généré le :  Jeu 11 Février 2016 à 14:10
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `identifiant` (
 
 INSERT INTO `identifiant` (`Identi`, `Password`) VALUES
 ('bleu', '123456'),
-('chose', '321'),
+('chose', '123654'),
 ('Massard', '123');
 
 -- --------------------------------------------------------
@@ -65,9 +65,11 @@ CREATE TABLE IF NOT EXISTS `prise` (
 --
 
 INSERT INTO `prise` (`Identity`, `Mac`, `IDWeb`, `EtatBool1`, `EtatBool2`, `EtatBool3`, `EtatBool4`, `EtatBool5`) VALUES
-('bleu', '41:45:pm', 0, 1, 1, 0, 0, 1),
+('bleu', '00:00:11:00', 1, 1, 1, 1, 1, 1),
+('bleu', '11:11:11:11:11', 2, 1, 0, 0, 1, 0),
 ('Massard', 'b4:b4:b4', 0, 0, 0, 0, 0, 0),
-('chose', 'b4:b4:b4:x1', 0, 1, 1, 1, 1, 1);
+('chose', 'b4:b4:b4:x1', 0, 1, 1, 1, 1, 0),
+('bleu', 'xs:a2:01:23', 0, 1, 1, 1, 1, 1);
 
 --
 -- Contraintes pour les tables exportées

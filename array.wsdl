@@ -7,24 +7,16 @@
   xmlns:soapenc='http://schemas.xmlsoap.org/soap/encoding/' 
   xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' 
   xmlns='http://schemas.xmlsoap.org/wsdl/'> 
- 
+
+
 	<message name='GetAuthRequest'> 
 	  <part name='Id' type='xsd:string'/>
 	  <part name='Password' type='xsd:string'/>
 	</message> 
 	<message name='GetAuthResponse'> 
-		<part>  
-			<types>
-			<xsd:schema elementFormDefault="unqualified" targetNamespace="urn:webservice">
-			  <xsd:simpleType name="WLChar">
-				<xsd:restriction base="xsd:string">
-				  <xsd:length value="1" fixed="true"/>
-				</xsd:restriction>
-			  </xsd:simpleType>
-			</xsd:schema>
-		  </types>
-		</part>
+	  <part name='result' type='xsd:string'/>
 	</message> 
+	
 	
 	<portType name='GetServerPortType'> 
 	  <operation name='authentification'> 
@@ -34,7 +26,7 @@
 	</portType> 
 	
 	<binding name='GetServerBinding' type='tns:GetServerPortType'> 
-	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/> 
+	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/>
 	  <operation name='authentification'> 
 	    <soap:operation soapAction='urn:xmethods-delayed-quotes#authentification'/> 
 	    <input> 
@@ -48,7 +40,7 @@
 	  </operation>
 	</binding> 
 	
-	<service name='GetServerService'> 
+	<service name='GeServerService'> 
 	  <port name='GetServerPort' binding='GetServerBinding'> 
 	    <soap:address location='http://172.17.50.155/webservice/server.php'/> 
 	  </port> 

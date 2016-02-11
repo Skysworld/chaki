@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s0="urn:GetServerService" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:GetServerService">
+ 	    
+  <message name="GetModificationRequest">
+    <part name="Identification" type="xsd:string"/>
+	<part name="Mac" type="xsd:string" />
+	<part name="Broche" type="xsd:string"/>
+  </message>
+  <message name="GetModificationResponse">
+    <part name="ModificationResult" type="xsd:string"/>
+  </message>
+  <message name="GetAuthRequest">
+    <part name="Id" type="xsd:string"/>
+	<part name="Password" type="xsd:string" />
+  </message>
+  <message name="GetAuthResponse">
+    <part name="AuthentificationResult" type="xsd:string" maxOccurs="unbounded"/>
+  </message>
+  
+  
+  <portType name="GetServerPortType">
+    <operation name="Modification">
+      <input message="s0:GetModificationRequest"/>
+      <output message="s0:GetModificationResponse"/>
+    </operation>
+    <operation name="Authentification">
+      <input message="s0:GetAuthRequest"/>
+      <output message="s0:GetAuthResponse"/>
+    </operation>
+  </portType>
+  
+  
+  <binding name="GetServerBinding" type="s0:GetServerPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="Modification">
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#modification'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+    </operation>
+    <operation name="Authentification">
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#authentification'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+    </operation>
+  </binding>
+  
+  
+  <service name="GetServerService">
+    <port name="GetServerPort" binding="s0:GetServerBinding">
+      <soap:address location="http://172.17.50.155/webservice/server.php"/>
+    </port>
+  </service>
+  
+  
+</definitions>
