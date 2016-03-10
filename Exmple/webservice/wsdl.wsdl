@@ -21,35 +21,25 @@
 	  <part name='Password' type='xsd:string'/>
 	</message> 
 	<message name='GetAuthResponse'> 
-	  <part name='result' type='xsd:string'/>
-	</message> 
-	<message name='GetPassRequest'> 
-	  <part name='Id' type='xsd:string'/>
-	  <part name='NewPassword' type='xsd:string'/>
-	</message> 
-	<message name='GetPassResponse'> 
-	  <part name='resultat' type='xsd:string'/>
+	  <part name='result' type='xsd:string[]'/>
 	</message> 
 	
+	
 	<portType name='GetServerPortType'> 
-	  <operation name='Modification'> 
+	  <operation name='modification'> 
 	    <input message='tns:GetModificationRequest'/> 
 	    <output message='tns:GetModificationResponse'/> 
 	  </operation> 
-	  <operation name='Authentification'> 
+	  <operation name='authentification'> 
 	    <input message='tns:GetAuthRequest'/> 
 	    <output message='tns:GetAuthResponse'/> 
-	  </operation>
-	  <operation name='Mot_de_passe'> 
-	    <input message='tns:GetPassRequest'/> 
-	    <output message='tns:GetPassResponse'/> 
 	  </operation>
 	</portType> 
 	
 	<binding name='GetServerBinding' type='tns:GetServerPortType'> 
 	  <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http'/> 
-	  <operation name='Modification'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Modification'/> 
+	  <operation name='modification'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#modification'/> 
 	    <input> 
 	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
 	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
@@ -59,19 +49,8 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>
-	  <operation name='Authentification'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Authentification'/> 
-	    <input> 
-	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
-	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
-	    </input> 
-	    <output> 
-	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
-	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
-	    </output> 
-	  </operation>
-	  <operation name='Mot_de_passe'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Mot_de_passe'/> 
+	  <operation name='authentification'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#authentification'/> 
 	    <input> 
 	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
 	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 

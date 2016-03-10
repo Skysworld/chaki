@@ -20,35 +20,20 @@ function Authentification($Id,$Password){
 	try{
 		// traitement d'une requete sql
 		$reponse = mysql_query("SELECT * FROM identifiant join prise ON identifiant.Identi=prise.Identity WHERE Identi='$Id' AND Password='$Password' ORDER BY Mac");
-	
 		if(mysql_num_rows($reponse)==0)
 		{
-			return 'Identifiant inconnu';
+			return '';
 		}
 		else{
-			/*
-			$resultat = array();
-			while ($row = mysql_fetch_assoc($reponse)) {
-			   $resultat[] = $row['Mac'];
-			}
-			return implode(",",$resultat);
-			*/
-			
-			while ($row = mysql_fetch_assoc($reponse)) { 
-				$resultat.=($resultat==""?"":"," ).$row['Mac']; 
-			} 
-			return $resultat;
-			
-			/*
 			$tableau = array();
 			$i = 0;
 			while($row=mysql_fetch_assoc($reponse)){
 				$tableau[$i]=$row[Mac];
 				$i ++;	
+			 //return $row[Mac];
 			}
-			$autre= "$tableau[0],$tableau[1],$tableau[2],$tableau[3],$tableau[4],$tableau[5]" ;
-			return $autre;
-			*/
+			return  $tableau;
+			
 		}
 		
 	}catch (Exception $a){
@@ -59,28 +44,18 @@ function Authentification($Id,$Password){
 function Modification($Identifiant,$Mac,$Broche) {
 	//appel a la fonction de base de donnee
 	Base_de_donnee();
+
 	try{
 	//$requete = $bdd->query("INSERT INTO prise(Identifiant,Mac, EtatBool1, EtatBool2, EtatBool3,EtatBool4, EtatBool5, date) Value('$Identifiant','$Mac','$Broche[0]','$Broche[1]','$Broche[2]','$Broche[3]','$Broche[4]')");
-	$requete= mysql_query("UPDATE prise SET EtatBool1='$Broche[0]', EtatBool2='$Broche[1]', EtatBool3='$Broche[2]', EtatBool4='$Broche[3]', EtatBool5='$Broche[4]', heure=NOW() WHERE Mac='$Mac' AND Identity='$Identifiant'");
-	return 'Prise ajoutees';
+	$requete= mysql_query("UPDATE prise SET EtatBool1='$Broche[0]', EtatBool2='$Broche[1]', EtatBool3='$Broche[2]', EtatBool4='$Broche[3]', EtatBool5='$Broche[4]' WHERE Mac='$Mac' AND Identity='$Identifiant'");
+	return 'Infos ajoutees';
+	//return $Broche[1];
 	}
 	catch (Exception $a){
 		die ('Erreur:'.$a->getMessage());
 	}
 }
 
-function Mot_de_passe($Id,$NewPassword) {
-	//appel a la fonction de base de donnee
-	Base_de_donnee();
-	try{
-	//$requete = $bdd->query("INSERT INTO prise(Identifiant,Mac, EtatBool1, EtatBool2, EtatBool3,EtatBool4, EtatBool5, date) Value('$Identifiant','$Mac','$Broche[0]','$Broche[1]','$Broche[2]','$Broche[3]','$Broche[4]')");
-	$requete= mysql_query("UPDATE identifiant SET Password='$NewPassword' WHERE Identi='$Identifiant'");
-	return 'Mot de passe change ';
-	}
-	catch (Exception $a){
-		die ('Erreur:'.$a->getMessage());
-	}
-}
 
 // Désactivation du cache WSDL
 ini_set("soap.wsdl_cache_enabled", "0");  
@@ -92,9 +67,8 @@ try {
   $server = new SoapServer('wsdl.wsdl');
   // On ajoute les méthodes que le serveur va gérer
   $server->addFunction("Modification"); 
-  $server->addFunction("Authentification");
-  $server->addFunction("Mot_de_passe");  
-  //$server->addFunction("base_de_donnee");
+  $server->addFunction("Authentification"); 
+  $server->addFunction("base_de_donnee");
 }catch (Exception $e){
   echo 'erreur'.$e;
 }

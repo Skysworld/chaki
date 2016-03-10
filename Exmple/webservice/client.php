@@ -23,19 +23,15 @@
 		$Id ='Chaki';
 		$Password='sTS2snir';
 		echo "Demande de connexion 1 : ";
-		//print_r ($client->Authentification($Id, $Password)); 
-		echo $client->Authentification($Id, $Password);
+		print_r ($client->Authentification($Id, $Password)); 
+		//echo $client->Authentification($Id, $Password);
 		
 		echo "<br> <br> <br> ";
 		$Id ='zefd';
 		$Password='787';
 		echo "Demande de connexion 2 : ";		
-		echo $client->Authentification($Id, $Password);
+		//echo $client->Authentification($Id, $Password);
 		
-		echo "<br> <br> <br> ";
-		$Id ='Chaki';
-		$NewPassword='787';	
-		echo $client->Mot_de_passe($Id, $NewPassword);
 			
 	} catch (SoapFault $exception) { 
 		echo $exception;       
