@@ -3,6 +3,13 @@
 // permet de faire un refresh automatique
 header("Refresh: 2;"); 
 
+$date = date("d-m-Y");
+$heure = date("H:i");
+
+//creation du client ws
+//$client = new WebSocket('ws://172.17.50.156:9300/');
+//$client = new WebSocket('172.17.50.156',9300);
+
 function Base_de_donnee(){
 	try{
 		//Connexion à my sql
@@ -74,7 +81,19 @@ function Mot_de_passe($Id,$NewPassword) {
 	Base_de_donnee();
 	try{
 	//$requete = $bdd->query("INSERT INTO prise(Identifiant,Mac, EtatBool1, EtatBool2, EtatBool3,EtatBool4, EtatBool5, date) Value('$Identifiant','$Mac','$Broche[0]','$Broche[1]','$Broche[2]','$Broche[3]','$Broche[4]')");
-	$requete= mysql_query("UPDATE identifiant SET Password='$NewPassword' WHERE Identi='$Identifiant'");
+	$requete= mysql_query("UPDATE identifiant SET Password='$NewPassword' WHERE Identi='$Id'");
+	return 'Mot de passe change ';
+	}
+	catch (Exception $a){
+		die ('Erreur:'.$a->getMessage());
+	}
+}
+
+function Horodateur(){
+	Base_de_donnee();
+	try{
+	//$requete = $bdd->query("INSERT INTO prise(Identifiant,Mac, EtatBool1, EtatBool2, EtatBool3,EtatBool4, EtatBool5, date) Value('$Identifiant','$Mac','$Broche[0]','$Broche[1]','$Broche[2]','$Broche[3]','$Broche[4]')");
+	$requete= mysql_query("UPDATE identifiant SET Password='$NewPassword' WHERE Identi='$Id'");
 	return 'Mot de passe change ';
 	}
 	catch (Exception $a){
@@ -83,18 +102,20 @@ function Mot_de_passe($Id,$NewPassword) {
 }
 
 // Désactivation du cache WSDL
-ini_set("soap.wsdl_cache_enabled", "0");  
- 
+ini_set("soap.wsdl_cache_enabled", "0"); 
+
 // Catch l'erreur si l'instanciation la classe SoapServer
 // échoue, on retourne l'erreur
 try {
+	
 // APPEL DE LA WSDL
   $server = new SoapServer('wsdl.wsdl');
-  // On ajoute les méthodes que le serveur va gérer
-  $server->addFunction("Modification"); 
+  
+  // Les méthodes que le serveur va gérer
+  $server->addFunction("Modification");
   $server->addFunction("Authentification");
-  $server->addFunction("Mot_de_passe");  
-  //$server->addFunction("base_de_donnee");
+  $server->addFunction("Mot_de_passe");
+
 }catch (Exception $e){
   echo 'erreur'.$e;
 }
@@ -102,9 +123,23 @@ try {
 // Si l'appel provient d'une requête POST (Web Service)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // On lance le serveur SOAP
-  $server->handle();
+ $server->handle();
+  
+  /*
+  if ('POST' == $_SERVER['Modification']){
+  // Envoi au WS
+  WebSocket.send('#'.'Mac');
+    WebSocket.onopen = function()
+               {
+                  // Web Socket is connected, send data using send()
+                  ws.send("Message to send");
+			   };  
+  }		*/	   
 }
+ 
 else {
+//Print("Nous sommes le $date et il est $heure");
+  echo '<ul>';
   echo '<strong>Fonctions du serveur: </strong>';
   echo '<ul>';
   foreach($server->getFunctions() as $func) {
@@ -112,4 +147,5 @@ else {
   }
   echo '</ul>';
 }
+
 ?>
