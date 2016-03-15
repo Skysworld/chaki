@@ -5,7 +5,7 @@ error_reporting(E_ALL);
  * Basic websocket client.
  * Supporting draft hybi-10. 
  */
-class Websocket
+class WebSocketClient
 {
 	private $_host;
 	private $_port;

@@ -21,13 +21,19 @@
 	  <part name='Password' type='xsd:string'/>
 	</message> 
 	<message name='GetAuthResponse'> 
-	  <part name='result' type='xsd:string'/>
+	  <part name='resultat' type='xsd:string'/>
 	</message> 
 	<message name='GetPassRequest'> 
 	  <part name='Id' type='xsd:string'/>
 	  <part name='NewPassword' type='xsd:string'/>
 	</message> 
 	<message name='GetPassResponse'> 
+	  <part name='resultat' type='xsd:string'/>
+	</message> 
+	<message name='GetEtatRequest'>
+	  <part name='Mac' type='xsd:string'/>
+	</message> 
+	<message name='GetEtatResponse'> 
 	  <part name='resultat' type='xsd:string'/>
 	</message> 
 	
@@ -43,6 +49,10 @@
 	  <operation name='Mot_de_passe'> 
 	    <input message='tns:GetPassRequest'/> 
 	    <output message='tns:GetPassResponse'/> 
+	  </operation>
+	  <operation name='Etat_courant'> 
+	    <input message='tns:GetEtatRequest'/> 
+	    <output message='tns:GetEtatResponse'/> 
 	  </operation>
 	</portType> 
 	
@@ -81,9 +91,20 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>
+	  <operation name='Etat_courant'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Etat_courant'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+	  </operation>
 	</binding> 
 	
-	<service name='GeServerService'> 
+	<service name='GetServerService'> 
 	  <port name='GetServerPort' binding='GetServerBinding'> 
 	    <soap:address location='http://172.17.50.155/webservice/server.php'/> 
 	  </port> 

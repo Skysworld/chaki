@@ -1,1 +1,3 @@
 data center php
+
+c:\wamp\bin\php\php5.5.12\php.exe ./clientws.php

@@ -24,16 +24,21 @@
 		echo "<br> <br> <br> ";
 		$Identifiant ='Chaki';
 		$Mac='01:00:5E:CC:38:S1';
-		$Broche='11111';
+		$Broche='11001';
 		echo "Adresse Mac prise : $Mac <br> Broche : $Broche";
 		echo "<br> ";
 		echo $client->Modification($Identifiant, $Mac, $Broche); 
-
+		
 		// Changement de mot de passe		
 		echo "<br> <br> <br> ";
 		$Id ='chose';
 		$NewPassword='blabla';	
 		echo $client->Mot_de_passe($Id, $NewPassword);
+		
+		//Affichage des etats courant 
+		echo "<br> <br> <br> ";
+		$Mac ='01:00:5E:CC:38:S1';
+		echo $client->Etat_courant($Mac);
 			
 	} catch (SoapFault $exception) { 
 		echo $exception;       
