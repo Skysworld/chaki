@@ -1,14 +1,13 @@
 <?php
 
 // permet de faire un refresh automatique
-header("Refresh: 2;"); 
+//header("Refresh: 2;"); 
+
+require('lib/class.websocket_client.php');
 
 $date = date("d-m-Y");
 $heure = date("H:i");
 
-//creation du client ws
-//$client = new WebSocket('ws://172.17.50.156:9300/');
-//$client = new WebSocket('172.17.50.156',9300);
 
 function Base_de_donnee(){
 	try{
@@ -33,6 +32,7 @@ function Authentification($Id,$Password){
 			return 'Identifiant inconnu';
 		}
 		else{
+			
 			while ($row = mysql_fetch_assoc($reponse)) { 
 				$resultat.=($resultat==""?"":"," ).$row['Mac']; 
 			} 
@@ -48,13 +48,20 @@ function Modification($Identifiant,$Mac,$Broche) {
 	//appel a la fonction de base de donnee
 	Base_de_donnee();
 	try{
-	//$requete = $bdd->query("INSERT INTO prise(Identifiant,Mac, EtatBool1, EtatBool2, EtatBool3,EtatBool4, EtatBool5, date) Value('$Identifiant','$Mac','$Broche[0]','$Broche[1]','$Broche[2]','$Broche[3]','$Broche[4]')");
-	$requete= mysql_query("UPDATE prise SET EtatBool1='$Broche[0]', EtatBool2='$Broche[1]', EtatBool3='$Broche[2]', EtatBool4='$Broche[3]', EtatBool5='$Broche[4]', date=NOW() WHERE Mac='$Mac' AND Identity='$Identifiant'");
-	return 'Prise ajoutees';
-	}
-	catch (Exception $a){
-		die ('Erreur:'.$a->getMessage());
-	}
+		
+		$requete= mysql_query("UPDATE prise SET EtatBool1='$Broche[1]', EtatBool2='$Broche[2]', EtatBool3='$Broche[3]', EtatBool4='$Broche[4]', EtatBool5='$Broche[5]', date=NOW() WHERE Mac='$Mac' AND Identity='$Identifiant'");
+		$requete= mysql_query("UPDATE programmation SET Prog_Horraire='$Broche[0]' WHERE Mac='$Mac'");
+
+		//creation du client ws
+		$client = new WebsocketClient;
+		$client->connect('172.17.50.156', 9300, '/');
+		$client->sendData("#$Mac");
+
+		return 'Prise ajoutees';
+		}
+		catch (Exception $a){
+			die ('Erreur:'.$a->getMessage());
+		}
 }
 
 function Mot_de_passe($Id,$NewPassword) {
