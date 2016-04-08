@@ -13,14 +13,13 @@ require('lib/class.websocket_client.php');
 /**
  * Fonction permettant la connexion à la BDD
  */
+ 
 function Base_de_donnees(){
-try{
-include('./secure/config.php');	
-mysql_connect($SQLhost, $SQLlogin, $SQLpass);
-mysql_select_db($SQLBDD);
-
-//Connexion à my sql
-}catch (Exception $e){
+	try{
+		//Connexion à my sql
+		mysql_connect("localhost", "root", "");
+		mysql_select_db("domotique");
+	}catch (Exception $e){
 		//En cas d'erreur de connexion
 		die('Erreur : '.$e->getMessage());
 	}
@@ -60,23 +59,22 @@ function Authentification($Id,$Password){
 
 
 /**
- * Fonction permettant la modification des etats de la multiprise en mode instantane et l'envoi des prises qui ont subit un changement au serveur WS
+ * Fonction permettant la modification des etats de la multiprise en mode instantane
  * $Identifiant est un string, nom du client
  * $Mac est un string, l'adresse mac de la multiprise du client 
  * $N_Prise est int, le numero de la prise
  * $Etat est un boolean, designe l etat de la prise
  * Return string
  */
- function Modification($Identifiant,$Mac,$N_prise,$Etat) {
-	$Ip='172.17.50.156';
+ function Modification($Mac,$N_prise,$Etat) {
+	
 	//Appel de la BDD
 	Base_de_donnees();
 	try{
 		$etatbool='EtatBool'.$N_prise;
-		$ephem='Nb_Ephe_Prise'.$N_prise;
 		// Requete sql pour modifier l'état des prises
-		$requete= mysql_query("UPDATE prise SET $etatbool='$Etat' WHERE Mac='$Mac' AND Identity='$Identifiant'");
-		$modifEphe= mysql_query("UPDATE programmation SET $ephem=0 WHERE Mac='$Mac'");		
+		$requete= mysql_query("UPDATE prise SET $etatbool='$Etat' WHERE Mac='$Mac'");
+			
 		switch ($N_prise){
 			case 1:
 				$p='10000';
@@ -95,14 +93,14 @@ function Authentification($Id,$Password){
 			break;
 		}
 		
-		// Création d'un client web socket pour une connexion au server
+		// Création d'un client web socket et connexion au serveur
 		$client = new WebsocketClient;
-		$client->connect($Ip, 9300, '/');
+		$client->connect('172.17.50.156', 9300, '/');
 		// Renvoi # et l'adresse Mac de la multiprise modifiée
 
 		$client->sendData("#$Mac$p");
 		
-		return "Prise $N_prise modifie";
+		//return "Prise $N_prise modifie <br>";
 		
 		}
 	catch (Exception $a){
@@ -175,14 +173,13 @@ function Etat_courant($Mac){
 
 
 /**
- * Fonction permettant de planifier une heure d'allumage et l'envoi des prises qui ont subit un changement au serveur WS
+ * Fonction permettant de planifier une heure d'allumage
  * $Mac est un string, l'adresse mac de la multiprise du client 
  * $N_prise est un int, le num de la prise qui se modifie
  * $Nb_Ephe est un int, le num du slot qui se modifie
  * $Plannif est un string, le jour et l'heure est 
  */
 function Ephemeride($Mac, $N_prise, $Nb_Ephe, $Plannif){
-	$Ip='172.17.50.156';
 	//appel de la BDD
 	Base_de_donnees();
 	try{
@@ -211,10 +208,10 @@ function Ephemeride($Mac, $N_prise, $Nb_Ephe, $Plannif){
 		
 		// Création d'un client web socket et connexion au serveur
 		$client = new WebsocketClient;
-		$client->connect($Ip, 9300, '/');
+		$client->connect('172.17.50.155', 9300, '/');
 		// Renvoi # et l'adresse Mac de la multiprise modifiée
-		$client->sendData("#$Mac$p");
-		
+		//$client->sendData("#$Mac$p");
+	
 		return "Programmation de la prise";
 	}
 	catch (Exception $a){
@@ -254,10 +251,10 @@ function Etat_courant_ephe($Mac,$N_Prise, $Nb_Ephe){
 				while ($row = mysql_fetch_assoc($requete)) {$resultat.=$row[$slot1];}
 			break;
 			case 2:
-				while ($row = mysql_fetch_assoc($requete)) {$resultat.=$row[$slot1].$row[$slot2];}
+				while ($row = mysql_fetch_assoc($requete)) {$resultat.=$row[$slot2];}
 			break;
 			case 3:
-				while ($row = mysql_fetch_assoc($requete)) {$resultat.=$row[$slot1].$row[$slot2].$row[$slot3];}
+				while ($row = mysql_fetch_assoc($requete)) {$resultat.=$row[$slot3];}
 			break;
 			}
 			return "$resultat";		

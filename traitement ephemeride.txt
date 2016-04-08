@@ -1,5 +1,0 @@
-data center php
-
-c:\wamp\bin\php\php5.5.12\php.exe ./clientws.php
-
-http://antoine.goutenoir.com/blog/2013/07/02/test-driven-websockets-and-symfony2-using-ratchet/
