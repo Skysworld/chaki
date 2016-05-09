@@ -1,4 +1,4 @@
-<?xml version ='1.0' encoding ='UTF-8' ?> 
+﻿<?xml version ='1.0' encoding ='UTF-8' ?> 
 <definitions name='server' 
   targetNamespace='http://172.17.50.155/SOAP/server.php' 
   xmlns:tns='http://172.17.50.155/SOAP/server.php' 
@@ -9,7 +9,7 @@
   xmlns='http://schemas.xmlsoap.org/wsdl/'> 
 
 	<message name='GetModificationRequest'> 
-	  <part name='Identification' type='xsd:string'/>
+	  <part name='Identifiant' type='xsd:string'/>
 	  <part name='Mac' type='xsd:string'/>
 	  <part name='N_prise' type='xsd:int'/>
 	  <part name='Etat' type='xsd:boolean'/>
@@ -18,15 +18,16 @@
 	  <part name='resultat' type='xsd:string'/> 
 	</message> 
 	<message name='GetAuthRequest'> 
-	  <part name='Id' type='xsd:string'/>
+	  <part name='Identifiant' type='xsd:string'/>
 	  <part name='Password' type='xsd:string'/>
 	</message> 
 	<message name='GetAuthResponse'> 
 	  <part name='resultat' type='xsd:string'/>
 	</message> 
 	<message name='GetPassRequest'> 
-	  <part name='Id' type='xsd:string'/>
+	  <part name='Identifiant' type='xsd:string'/>
 	  <part name='NewPassword' type='xsd:string'/>
+	  <part name='Password' type='xsd:string'/>
 	</message> 
 	<message name='GetPassResponse'> 
 	  <part name='resultat' type='xsd:string'/>
@@ -36,7 +37,7 @@
 	</message> 
 	<message name='GetEtatResponse'> 
 	  <part name='resultat' type='xsd:string'/>
-	</message> 
+	</message>
 	<message name='GetEpheRequest'>
 	  <part name='Mac' type='xsd:string'/>
 	  <part name='N_prise' type='xsd:int'/>
@@ -48,10 +49,16 @@
 	</message>
 	<message name='GetEtatEpheRequest'>
 	  <part name='Mac' type='xsd:string'/>
-	  <part name='N_prise' type='xsd:int'/>
-	  <part name='Nb-Ephe' type='xsd:int'/>
+	  <part name='N_Prise' type='xsd:int'/>
+	  <part name='Nb_Ephe' type='xsd:int'/>
 	</message> 
 	<message name='GetEtatEpheResponse'> 
+	  <part name='resultat' type='xsd:string'/>
+	</message>
+	<message name='GetHistoriqueRequest'>
+	  <part name='Mac' type='xsd:string'/>
+	</message> 
+	<message name='GetHistoriqueResponse'> 
 	  <part name='resultat' type='xsd:string'/>
 	</message>
 	
@@ -76,9 +83,13 @@
 	    <input message='tns:GetEpheRequest'/> 
 	    <output message='tns:GetEpheResponse'/> 
 	  </operation>
-	  <operation name='Etat_courant_ephemeride'> 
+	  <operation name='Etat_courant_ephe'> 
 	    <input message='tns:GetEtatEpheRequest'/> 
 	    <output message='tns:GetEtatEpheResponse'/> 
+	  </operation>
+	  <operation name='Historique'> 
+	    <input message='tns:GetHistoriqueRequest'/> 
+	    <output message='tns:GetHistoriqueResponse'/> 
 	  </operation>
 	</portType> 
 	
@@ -139,8 +150,19 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>	 
-	  <operation name='Etat_courant_ephemeride'> 
-	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Etat_courant_ephemeride'/> 
+	  <operation name='Etat_courant_ephe'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Etat_courant_ephe'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+	  </operation>
+	  <operation name='Historique'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Historique'/> 
 	    <input> 
 	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
 	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
