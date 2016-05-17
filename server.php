@@ -1,8 +1,5 @@
 ﻿<?php
 
-$date = date("d-m-Y");
-$heure = date("H:i");
-
 //Refresh automatique du serveur
 //header("Refresh: 2;"); 
 
@@ -24,9 +21,9 @@ function Base_de_donnees(){
 	mysql_select_db('domotique');
 	*/
 	
-	$date_expiration = date("Y-m-d H:i:s", time()+ 60 * 60 * 24 * 7);
+	//$date_expiration = date("Y-m-d H:i:s",strtotime('+7 day'));
 	
-	$sql = "DELETE FROM historique WHERE Date= '$date_expiration'" ;
+	//$sql = "DELETE FROM historique WHERE Date='$date_expiration'" ;
 
 	
 	//Connexion à my sql
@@ -107,8 +104,8 @@ function Authentification($Identifiant,$Password){
 				$etat3=$row[EtatBool3];
 				$etat4=$row[EtatBool4];
 				$etat5=$row[EtatBool5];
-				$date_expiration = date("Y-m-d H:i:s", time()+ 60 * 60 * 24 * 7);
-				$histori=mysql_query("INSERT INTO historique (NomClient, Mac, EtatBool1, EtatBool2, EtatBool3, EtatBool4, EtatBool5) VALUES('$Identifiant','$Mac', $etat1, $etat2, $etat3, $etat4, $etat5)");
+				$date_expiration = date("Y-m-d H:i:s",strtotime('+7 day'));
+				$histori=mysql_query("INSERT INTO historique (NomClient, Mac, EtatBool1, EtatBool2, EtatBool3, EtatBool4, EtatBool5, DateExpiration) VALUES('$Identifiant','$Mac', $etat1, $etat2, $etat3, $etat4, $etat5, '$date_expiration')");
 				
 				switch ($N_prise){
 					case 1:
@@ -135,8 +132,8 @@ function Authentification($Identifiant,$Password){
 
 		//	$client->sendData("#$Mac$p");
 		
-		
-			return "Votre prise N°$N_prise est modifiée";
+		return "$date_expiration";
+			//return "Votre prise N°$N_prise est modifiée";
 			}
 			
 		}

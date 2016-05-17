@@ -24,6 +24,13 @@ echo "<br> <br> <br> ";
 	echo $client->Authentification($Identifiant,$Password);
 echo "<br> <br> <br> ";
 */
+	$date_expiration = date("Y-m-d H:i:s");
+	echo "<br> Date attendu: $date_expiration <br>";
+	$date_expiration = date("Y-m-d H:i:s", time()+ 60 * 60 * 24 * 7);
+	echo "<br> Date attendu: $date_expiration <br><br>";
+
+echo date('Y-m-d H:i:s',strtotime('+7 day'));	
+echo "<br/>";
 
 	echo "Modification qui fonctionne <br>";
 	$Identifiant ='Paul';
@@ -41,6 +48,7 @@ echo "<br> <br> <br> ";
 	$Etat= 1;
 	echo "Nom: $Identifiant <br> Mac: $Mac <br> Prise num: $N_prise <br> l'etat est $Etat <br> reponse : ";
 	echo $client->Modification($Identifiant,$Mac,$N_prise,$Etat);
+	
 echo "<br> <br> <br> ";
 
 /*
