@@ -8,7 +8,8 @@
 	$options = array('uri'=> 'http://172.17.50.155/webservice/');
 	$client = new SoapClient("wsdl.wsdl"); 
 	try {
-		//*********************************************************Modifi revoir l'insertion de date_expiration et aussi dans base_de_donnees()
+
+//echo"************************************************************Authentification*********************************************************<br><br>";
 /*
 	echo "Identifiant qui fonctionne <br>";
 	$Identifiant = 'Paul';
@@ -24,14 +25,9 @@ echo "<br> <br> <br> ";
 	echo $client->Authentification($Identifiant,$Password);
 echo "<br> <br> <br> ";
 */
-	$date_expiration = date("Y-m-d H:i:s");
-	echo "<br> Date attendu: $date_expiration <br>";
-	$date_expiration = date("Y-m-d H:i:s", time()+ 60 * 60 * 24 * 7);
-	echo "<br> Date attendu: $date_expiration <br><br>";
 
-echo date('Y-m-d H:i:s',strtotime('+7 day'));	
-echo "<br/>";
-
+//echo"************************************************************Modification*********************************************************<br><br>";
+/*
 	echo "Modification qui fonctionne <br>";
 	$Identifiant ='Paul';
 	$Mac='18:fe:34:e4:c1:47';
@@ -50,7 +46,8 @@ echo "<br> <br> <br> ";
 	echo $client->Modification($Identifiant,$Mac,$N_prise,$Etat);
 	
 echo "<br> <br> <br> ";
-
+*/
+//echo"***********************************************************Mot_de_passe*********************************************************<br><br>";
 /*
 	echo "Modif du MDP qui fonctionne <br>";
 	$Id ='Erwan';
@@ -58,14 +55,15 @@ echo "<br> <br> <br> ";
 	$NewPassword='7110eda4d09e062aa5e4';	
 	echo $client->Mot_de_passe($Id, $NewPassword, $Password);
 echo "<br> <br> <br> ";
-
+*/
 	echo "Modif du MDP qui ne fonctionne pas <br>";
-	$Id ='Erwan';
-	$Password='blabla';
-	$NewPassword='fjdskh';	
+	$Id ='Chaki';
+	$Password='chaki1';
+	$NewPassword='chaki';	
 	echo $client->Mot_de_passe($Id, $NewPassword, $Password);
 echo "<br> <br> <br> ";
-*/
+
+//echo"***********************************************************Etat_courant*********************************************************<br><br>";
 /*
 	echo "Etat courant qui fonctionne <br>";
 	$Mac ='18:fe:34:e4:c1:47';
@@ -77,6 +75,7 @@ echo "<br> <br> <br> ";
 	echo $client->Etat_courant($Mac);	
 echo "<br> <br> <br> ";
 */
+//echo"************************************************************Ephemeride*********************************************************<br><br>";
 /*
 	echo "Ephemeride qui fonctionne <br>";
 	$Mac='18:fe:34:e4:c1:47';
@@ -96,7 +95,7 @@ echo "<br> <br> <br> ";
 	echo $client->Ephemeride($Mac, $N_prise, $Nb_Ephe, $Plannif);		
 echo "<br> <br> <br> ";
 */
-
+//echo"*******************************************************Etat_courant_ephe*******************************************************<br><br>";
 /*
 	echo "Etat des Ephemerides fonctionne<br>";
 	$Mac='18:fe:34:e4:c1:47';
@@ -113,8 +112,8 @@ echo "<br> <br> <br> ";
 	echo $client->Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe);
 echo "<br> <br> <br> ";
 */
+//echo"************************************************************Historique*********************************************************<br><br>";
 /*
-
 	echo "Historique qui fonctionne <br>";
 	$Mac='18:fe:34:e4:c1:47';
 	echo $client->Historique($Mac);

@@ -6,7 +6,6 @@
 // Librairie pour le client WebSocket
 require('lib/class.websocket_client.php');
 
-
 /**
  * Fonction permettant la connexion à la BDD
  */
@@ -20,17 +19,13 @@ function Base_de_donnees(){
 	mysql_connect('localhost', 'root', '');
 	mysql_select_db('domotique');
 	*/
-	
-	//$date_expiration = date("Y-m-d H:i:s",strtotime('+7 day'));
-	
-	//$sql = "DELETE FROM historique WHERE Date='$date_expiration'" ;
 
-	
 	//Connexion à my sql
 	}catch (Exception $e){
 		//En cas d'erreur de connexion
 		die('Erreur : '.$e->getMessage());
 	}
+	
 }
 
 /**
@@ -159,7 +154,21 @@ function Mot_de_passe($Identifiant,$NewPassword,$Password) {
 	Base_de_donnees();
 	
 	try{
+	
+		define('PREFIXE_SHA1', 'p8%B;Qdf78'); 
+		$mdp_sha1 = sha1(PREFIXE_SHA1.$Password);	
+		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$mdp_sha1'");
 		
+		if(mysql_num_rows($requete)==0){
+			return "Requete non prise en compte";
+		}else{
+			$newmdp_sha1 = sha1(PREFIXE_SHA1.$NewPassword);
+			$reponse= mysql_query("UPDATE client SET Password='$newmdp_sha1' WHERE NomClient='$Identifiant' AND Password='$mdp_act'");
+			return "Mot de passe a bien changé";
+		}
+		
+		
+/*		
 		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$Password'");
 		
 		if(mysql_num_rows($requete)==0)
@@ -167,10 +176,10 @@ function Mot_de_passe($Identifiant,$NewPassword,$Password) {
 			return "Requete non prise en compte";
 		}
 		else{
-			$reponse= mysql_query("UPDATE client SET Password='$NewPassword' WHERE NomClient='$Identifiant' AND Password='$Password'");
+			$reponse= mysql_query("UPDATE client SET Password='$mdp_new' WHERE NomClient='$Identifiant' AND Password='$Password'");
 			return "Mot de passe a bien changé";
 		}
-	
+*/	
 	}
 	catch (Exception $a){
 		//En cas d'erreur de connexion
@@ -346,6 +355,7 @@ function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 	try{
 
 		// Requete sql pour recuperer l'historique
+		$delhistorique = mysql_query("DELETE FROM historique WHERE Date >= DateExpiration");
 		$requete= mysql_query("SELECT * FROM historique WHERE Mac='$Mac'");
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
