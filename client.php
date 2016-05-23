@@ -1,6 +1,6 @@
 ﻿<?php
 	// refresh de la page
-//	header("Refresh: 2;"); 
+	header("Refresh: 2;"); 
 
 	// Désactivation du cache WSDL
 	ini_set("soap.wsdl_cache_enabled", "0");  
@@ -47,22 +47,39 @@ echo "<br> <br> <br> ";
 	
 echo "<br> <br> <br> ";
 */
+
 //echo"***********************************************************Mot_de_passe*********************************************************<br><br>";
 /*
 	echo "Modif du MDP qui fonctionne <br>";
 	$Id ='Erwan';
-	$Password='7110eda4d09e062aa5e4';
-	$NewPassword='7110eda4d09e062aa5e4';	
+	$Password='test';
+	$NewPassword='test';	
 	echo $client->Mot_de_passe($Id, $NewPassword, $Password);
 echo "<br> <br> <br> ";
-*/
+
 	echo "Modif du MDP qui ne fonctionne pas <br>";
-	$Id ='Chaki';
+	$Id ='';
 	$Password='chaki1';
 	$NewPassword='chaki';	
 	echo $client->Mot_de_passe($Id, $NewPassword, $Password);
 echo "<br> <br> <br> ";
+*/
+//echo"**********************************************Reinitialisation-que-pour-l-examen*********************************************************<br><br>";
+/*
+	echo "Modif du MDP qui fonctionne <br>";
+	$Id ='Erwan';
+	$Password='test';
+	$NewPassword='test';	
+	echo $client->Reinitialisation($Id, $NewPassword, $Password);
+echo "<br> <br> <br> ";
 
+	echo "Modif du MDP qui ne fonctionne pas <br>";
+	$Id ='';
+	$Password='chaki1';
+	$NewPassword='chaki';	
+	echo $client->Reinitialisation($Id, $NewPassword, $Password);
+echo "<br> <br> <br> ";
+*/
 //echo"***********************************************************Etat_courant*********************************************************<br><br>";
 /*
 	echo "Etat courant qui fonctionne <br>";

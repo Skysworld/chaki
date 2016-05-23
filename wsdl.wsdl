@@ -32,6 +32,14 @@
 	<message name='GetPassResponse'> 
 	  <part name='resultat' type='xsd:string'/>
 	</message> 
+	<message name='GetPassInitRequest'> 
+	  <part name='Identifiant' type='xsd:string'/>
+	  <part name='NewPassword' type='xsd:string'/>
+	  <part name='Password' type='xsd:string'/>
+	</message> 
+	<message name='GetPassInitResponse'> 
+	  <part name='resultat' type='xsd:string'/>
+	</message> 
 	<message name='GetEtatRequest'>
 	  <part name='Mac' type='xsd:string'/>
 	</message> 
@@ -74,6 +82,10 @@
 	  <operation name='Mot_de_passe'> 
 	    <input message='tns:GetPassRequest'/> 
 	    <output message='tns:GetPassResponse'/> 
+	  </operation>
+	  <operation name='Reinitialisation'> 
+	    <input message='tns:GetPassInitRequest'/> 
+	    <output message='tns:GetPassInitResponse'/> 
 	  </operation>
 	  <operation name='Etat_courant'> 
 	    <input message='tns:GetEtatRequest'/> 
@@ -128,6 +140,17 @@
 	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
 	    </output> 
 	  </operation>
+	  <operation name='Reinitialisation'> 
+	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Reinitialisation'/> 
+	    <input> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	      	encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </input> 
+	    <output> 
+	      <soap:body use='encoded' namespace='urn:xmethods-delayed-info' 
+	        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+	    </output> 
+	  </operation>	  
 	  <operation name='Etat_courant'> 
 	    <soap:operation soapAction='urn:xmethods-delayed-quotes#Etat_courant'/> 
 	    <input> 

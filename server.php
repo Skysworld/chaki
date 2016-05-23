@@ -38,8 +38,11 @@ function Authentification($Identifiant,$Password){
 	//appel de la BDD
 	Base_de_donnees();
 	try{
+		// Codage du mdp en sha1
+		$mdp_sha1 = sha1($Password);
+		
 		// Requete sql pour récupérer les adresses mac associées à l'identifiant
-		$requete = mysql_query("SELECT * FROM client join multiprise ON client.NomClient=multiprise.NomClient WHERE client.NomClient='$Identifiant' AND Password='$Password' ORDER BY Mac");
+		$requete = mysql_query("SELECT * FROM client join multiprise ON client.NomClient=multiprise.NomClient WHERE client.NomClient='$Identifiant' AND Password='$mdp_sha1' ORDER BY Mac");
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
 		{
@@ -127,8 +130,8 @@ function Authentification($Identifiant,$Password){
 
 		//	$client->sendData("#$Mac$p");
 		
-		return "$date_expiration";
-			//return "Votre prise N°$N_prise est modifiée";
+		
+			return "Votre prise N°$N_prise a été modifiée ";
 			}
 			
 		}
@@ -154,32 +157,20 @@ function Mot_de_passe($Identifiant,$NewPassword,$Password) {
 	Base_de_donnees();
 	
 	try{
-	
-		define('PREFIXE_SHA1', 'p8%B;Qdf78'); 
-		$mdp_sha1 = sha1(PREFIXE_SHA1.$Password);	
+		$mdp_sha1 = sha1($Password);
+		$New_mdp_sha1 = sha1($NewPassword);
+		
 		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$mdp_sha1'");
-		
-		if(mysql_num_rows($requete)==0){
-			return "Requete non prise en compte";
-		}else{
-			$newmdp_sha1 = sha1(PREFIXE_SHA1.$NewPassword);
-			$reponse= mysql_query("UPDATE client SET Password='$newmdp_sha1' WHERE NomClient='$Identifiant' AND Password='$mdp_act'");
-			return "Mot de passe a bien changé";
-		}
-		
-		
-/*		
-		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$Password'");
 		
 		if(mysql_num_rows($requete)==0)
 		{
 			return "Requete non prise en compte";
 		}
 		else{
-			$reponse= mysql_query("UPDATE client SET Password='$mdp_new' WHERE NomClient='$Identifiant' AND Password='$Password'");
+			$reponse= mysql_query("UPDATE client SET Password='$New_mdp_sha1' WHERE NomClient='$Identifiant' AND Password='$mdp_sha1'");
 			return "Mot de passe a bien changé";
 		}
-*/	
+
 	}
 	catch (Exception $a){
 		//En cas d'erreur de connexion
@@ -187,6 +178,36 @@ function Mot_de_passe($Identifiant,$NewPassword,$Password) {
 	}
 }
 
+/**
+ * Fonction permettant de modifier le mot de passe de la BDD en sha1
+ * $Identifiant est un string, nom du client
+ * $NewPassword est un tring, le nouveau mot de passe du client
+ * Return string
+ */
+function Reinitialisation($Identifiant,$NewPassword,$Password) {
+	//Appel de la BDD
+	Base_de_donnees();
+	
+	try{
+		$mdp_sha1 = sha1($Password);
+		
+		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$Password'");
+		
+		if(mysql_num_rows($requete)==0)
+		{
+			return "Requete non prise en compte";
+		}
+		else{
+			$reponse= mysql_query("UPDATE client SET Password='$mdp_sha1' WHERE NomClient='$Identifiant' AND Password='$Password'");
+			return "Mot de passe a bien changé";
+		}
+
+	}
+	catch (Exception $a){
+		//En cas d'erreur de connexion
+		die ('Erreur:'.$a->getMessage());
+	}
+}
 
 
 
@@ -391,6 +412,7 @@ try {
 	$server->addFunction("Modification");
 	$server->addFunction("Authentification");
 	$server->addFunction("Mot_de_passe");
+	$server->addFunction("Reinitialisation");
 	$server->addFunction("Etat_courant");
 	$server->addFunction("Ephemeride");
 	$server->addFunction("Etat_courant_ephe");
