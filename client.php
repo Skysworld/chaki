@@ -1,12 +1,12 @@
 ﻿<?php
 	// refresh de la page
-	header("Refresh: 2;"); 
+//	header("Refresh: 2;"); 
 
 	// Désactivation du cache WSDL
 	ini_set("soap.wsdl_cache_enabled", "0");  
 
-	$options = array('uri'=> 'http://172.17.50.155/webservice/');
-	$client = new SoapClient("wsdl.wsdl"); 
+	$options = array('uri'=> 'http://172.17.50.152/webservice/');
+	$client = new SoapClient("GetServerService.wsdl"); 
 	try {
 
 //echo"************************************************************Authentification*********************************************************<br><br>";
@@ -17,7 +17,7 @@
 	echo "nom : $Identifiant <br> mdp : $Password <br> reponse :";
 	echo $client->Authentification($Identifiant,$Password);
 echo "<br> <br> <br> ";
-	
+/*
 	echo "Identifiant qui fonctionne pas <br>";
 	$Identifiant = 'Paul';
 	$Password = '456';
@@ -31,12 +31,12 @@ echo "<br> <br> <br> ";
 	echo "Modification qui fonctionne <br>";
 	$Identifiant ='Paul';
 	$Mac='18:fe:34:e4:c1:47';
-	$N_prise = 3;
-	$Etat=0;
+	$N_prise = 5;
+	$Etat=1;
 	echo "Nom: $Identifiant <br> Mac: $Mac <br> Prise num: $N_prise <br> l'etat est $Etat <br> reponse :";
 	echo $client->Modification($Identifiant,$Mac,$N_prise,$Etat);
 echo "<br> <br> <br> ";
-
+/*
 	echo "Modification qui ne fonctionne pas <br>";
 	$Identifiant ='Pas Paul';
 	$Mac='18:fe:34:e4:c1:47';
@@ -97,8 +97,8 @@ echo "<br> <br> <br> ";
 	echo "Ephemeride qui fonctionne <br>";
 	$Mac='18:fe:34:e4:c1:47';
 	$N_prise=1;
-	$Nb_Ephe=2;
-	$Plannif='103001655';
+	$Nb_Ephe=1;
+	$Plannif='555555555';
 	echo "Adresse Mac prise : $Mac <br> Plannifier : $Plannif <br> prise num : $N_prise <br> slot : $Nb_Ephe <br>";
 	echo $client->Ephemeride($Mac, $N_prise, $Nb_Ephe, $Plannif);	
 echo "<br> <br> <br> ";
@@ -130,12 +130,12 @@ echo "<br> <br> <br> ";
 echo "<br> <br> <br> ";
 */
 //echo"************************************************************Historique*********************************************************<br><br>";
-/*
+
 	echo "Historique qui fonctionne <br>";
 	$Mac='18:fe:34:e4:c1:47';
 	echo $client->Historique($Mac);
 echo "<br> <br> <br> ";
-
+/*
 	echo "Historique qui ne fonctionne pas <br>";
 	$Mac='ff:ff:ff:ff:ff:ff';
 	echo $client->Historique($Mac);

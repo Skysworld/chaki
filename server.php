@@ -1,8 +1,5 @@
 ﻿<?php
 
-//Refresh automatique du serveur
-//header("Refresh: 2;"); 
-
 // Librairie pour le client WebSocket
 require('lib/class.websocket_client.php');
 
@@ -15,24 +12,18 @@ function Base_de_donnees(){
 	include('./secure/config.php');
 	mysql_connect($SQLhost, $SQLlogin, $SQLpass);
 	mysql_select_db($SQLBDD);
-	/*
-	mysql_connect('localhost', 'root', '');
-	mysql_select_db('domotique');
-	*/
 
-	//Connexion à my sql
 	}catch (Exception $e){
 		//En cas d'erreur de connexion
 		die('Erreur : '.$e->getMessage());
 	}
-	
 }
 
 /**
- * Fonction permettant l'autentification d'un client 
+ * Fonction permettant l'accès à l'espace personnel d'un client 
  * $Identifiant est un string, nom du client
  * $Password est un string, mot de passe du client 	
- * Return les adresses Mac lié au client
+ * Return $resultat string, renvoi les adresses Mac lié au client
  */
 function Authentification($Identifiant,$Password){
 	//appel de la BDD
@@ -41,7 +32,7 @@ function Authentification($Identifiant,$Password){
 		// Codage du mdp en sha1
 		$mdp_sha1 = sha1($Password);
 		
-		// Requete sql pour récupérer les adresses mac associées à l'identifiant
+		// Requete sql pour récupérer les adresses mac associées à l'identifiant en comparant l'empreinte des mots de passe 
 		$requete = mysql_query("SELECT * FROM client join multiprise ON client.NomClient=multiprise.NomClient WHERE client.NomClient='$Identifiant' AND Password='$mdp_sha1' ORDER BY Mac");
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
@@ -49,7 +40,7 @@ function Authentification($Identifiant,$Password){
 			return "Identifiant inconnu";
 		}
 		else{
-			
+			//concaténation des adresses Mac lié au client
 			while ($row = mysql_fetch_assoc($requete)) {
 				$resultat.=($resultat==""?"":"," ).$row['Mac']; 
 			} 
@@ -65,12 +56,14 @@ function Authentification($Identifiant,$Password){
 
 
 /**
- * Fonction permettant la modification des etats de la multiprise en mode instantane et l'envoi des prises qui ont subit un changement au serveur WS
+ * Fonction permettant la modification des etats de la multiprise en mode instantane 
+ * Connexion au serveur WS
+ * Enregistrement des modification dans l 'historique
  * $Identifiant est un string, nom du client
  * $Mac est un string, l'adresse mac de la multiprise du client 
  * $N_Prise est int, le numero de la prise
  * $Etat est un boolean, designe l etat de la prise
- * Return string
+ * Return $resultat string, renvoi confirmation ou echec
  */
  function Modification($Identifiant,$Mac,$N_prise,$Etat) {
 
@@ -79,21 +72,20 @@ function Authentification($Identifiant,$Password){
 	try{
 		$etatbool='EtatBool'.$N_prise;
 		$ephem='Nb_Ephe_Prise'.$N_prise;
-		// Requete sql pour modifier l'état des prises
-		//$reponse=mysql_query("SELECT * FROM client join multiprise ON client.NomClient=multiprise.NomClient WHERE client.NomClient='$Identifiant' AND Mac='$Mac'");
+		// Requete sql qui selectionne la ligne en fonction de l'adresse mac et le nom du client associé
 		$requete=mysql_query("SELECT * FROM multiprise WHERE NomClient='$Identifiant' AND Mac='$Mac'");
+		
+		// Vérification du contenu de la requete		
 		if(mysql_num_rows($requete)==0)
 		{
 			return "Modification non prise en compte";
 		}
 		else{
-			$Ip='172.17.50.156';	
+			//Adresse IP du serveur WS	
+			$Ip='172.17.50.152';
+			//Requetes permetant la réecriture dans la BDD
 			$reponse= mysql_query("UPDATE multiprise SET $etatbool='$Etat' WHERE Mac='$Mac' AND NomClient='$Identifiant'");
-			$modifEphe= mysql_query("UPDATE programmation SET $ephem=0 WHERE Mac='$Mac'");
-			
-		//	$test=mysql_query("INSERT INTO historique (NomClient, IDWeb) VALUES('nom2', 145)");
-			
-			//$recuperation = mysql_query("SELECT * FROM multiprise WHERE Mac='$Mac' AND NomClient='$Identifiant'");
+			$modifEphe= mysql_query("UPDATE programmation SET $ephem=0 WHERE Mac='$Mac'");		
 			$recuperation = mysql_query("SELECT * FROM multiprise WHERE Mac='$Mac'");
 			
 			while ($row = mysql_fetch_assoc($recuperation)) {
@@ -102,9 +94,12 @@ function Authentification($Identifiant,$Password){
 				$etat3=$row[EtatBool3];
 				$etat4=$row[EtatBool4];
 				$etat5=$row[EtatBool5];
+				//date du jour avancé à 7 jours
 				$date_expiration = date("Y-m-d H:i:s",strtotime('+7 day'));
+				//Enregistrement de l'historique dans la BDD
 				$histori=mysql_query("INSERT INTO historique (NomClient, Mac, EtatBool1, EtatBool2, EtatBool3, EtatBool4, EtatBool5, DateExpiration) VALUES('$Identifiant','$Mac', $etat1, $etat2, $etat3, $etat4, $etat5, '$date_expiration')");
 				
+				//Le prise ayant subit une modification prend la valeur 1
 				switch ($N_prise){
 					case 1:
 						$p='10000';
@@ -123,19 +118,15 @@ function Authentification($Identifiant,$Password){
 					break;
 				}
 				
-			// Création d'un client web socket pour une connexion au server
-		//	$client = new WebsocketClient;
-		//	$client->connect($Ip, 9300, '/');
-			// Renvoi # et l'adresse Mac de la multiprise modifiée
-
-		//	$client->sendData("#$Mac$p");
+				// Création d'un client web socket pour une connexion au server
+				$client = new WebsocketClient;
+				$client->connect($Ip, 9300, '/');
+				// Renvoi "#" + l'adresse Mac + la prise qui a subbit le changement
+				$client->sendData("#$Mac$p");
 		
-		
-			return "Votre prise N°$N_prise a été modifiée ";
+				return "Votre prise N°$N_prise a été modifiée ";
 			}
-			
 		}
-		
 	}
 	catch (Exception $a){
 		//En cas d'erreur de connexion
@@ -147,30 +138,34 @@ function Authentification($Identifiant,$Password){
 
 
 /**
- * Fonction permettant la modification du mot de passe du client
+ * Fonction permettant de changer le mot de passe du client
  * $Identifiant est un string, nom du client
- * $NewPassword est un tring, le nouveau mot de passe du client
- * Return string
+ * $NewPassword est un string, le nouveau mot de passe du client
+ * $Password est un string, il s'agit du MDP qui est a servit à la connexion à l'espace personnel
+ * Return $resultat string, renvoi confirmation ou echec
  */
 function Mot_de_passe($Identifiant,$NewPassword,$Password) {
 	//Appel de la BDD
 	Base_de_donnees();
 	
 	try{
+		//Cryptage des mots de passe en sha1
 		$mdp_sha1 = sha1($Password);
 		$New_mdp_sha1 = sha1($NewPassword);
 		
+		//Requete sql qui selectionne tout en fonction du nom du client et du mot de passe courant
 		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$mdp_sha1'");
-		
+	
+		// Vérification du contenu de la requete			
 		if(mysql_num_rows($requete)==0)
 		{
 			return "Requete non prise en compte";
 		}
 		else{
+			//Requete permetant de mettre a jour le mot de passe
 			$reponse= mysql_query("UPDATE client SET Password='$New_mdp_sha1' WHERE NomClient='$Identifiant' AND Password='$mdp_sha1'");
 			return "Mot de passe a bien changé";
 		}
-
 	}
 	catch (Exception $a){
 		//En cas d'erreur de connexion
@@ -179,29 +174,33 @@ function Mot_de_passe($Identifiant,$NewPassword,$Password) {
 }
 
 /**
- * Fonction permettant de modifier le mot de passe de la BDD en sha1
+ * Fonction permettant de modifier le mot de passe présent en sha1 dans la BDD
  * $Identifiant est un string, nom du client
  * $NewPassword est un tring, le nouveau mot de passe du client
- * Return string
+ * $Password est un string, il s'agit du MDP qui est a servit à la connexion à l'espace personnel
+ * Return $resultat string, renvoi confirmation ou echec
  */
 function Reinitialisation($Identifiant,$NewPassword,$Password) {
 	//Appel de la BDD
 	Base_de_donnees();
 	
 	try{
+		//Cryptage des mots de passe en sha1
 		$mdp_sha1 = sha1($Password);
 		
+		//Requete sql qui selectionne tout en fonction du nom du client et du mot de passe courant
 		$requete=mysql_query("SELECT * FROM client WHERE NomClient='$Identifiant' AND Password='$Password'");
 		
+		// Vérification du contenu de la requete	
 		if(mysql_num_rows($requete)==0)
 		{
 			return "Requete non prise en compte";
 		}
 		else{
+			//Requete permetant de mettre a jour le mot de passe
 			$reponse= mysql_query("UPDATE client SET Password='$mdp_sha1' WHERE NomClient='$Identifiant' AND Password='$Password'");
 			return "Mot de passe a bien changé";
 		}
-
 	}
 	catch (Exception $a){
 		//En cas d'erreur de connexion
@@ -212,15 +211,16 @@ function Reinitialisation($Identifiant,$NewPassword,$Password) {
 
 
 /**
- * Fonction permettant le renvoi des états de la multiprise
+ * Fonction permettant le renvoi des états actuels des prises
  * $Mac est un string, l'adresse mac de la multiprise du client 
- * Return string, l'etat des prises sont renvoyés au client
+ * Return $resultat string, renvoi confirmation ou echec
  */
 function Etat_courant($Mac){
+
 	//appel de la BDD
 	Base_de_donnees();
 	try{
-		// Requete sql pour récuperer les états des prises
+		// Requete sql associe le client avec l'adresse mac 
 		$requete= mysql_query("SELECT * FROM multiprise WHERE Mac='$Mac'");
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
@@ -229,6 +229,7 @@ function Etat_courant($Mac){
 		}
 		else
 		{
+			//concaténation des états avant leurs renvoi 
 			while ($row = mysql_fetch_assoc($requete)) {
 				$resultat.=$row['EtatBool1'].$row['EtatBool2'].$row['EtatBool3'].$row['EtatBool4'].$row['EtatBool5']; 
 			}
@@ -236,35 +237,43 @@ function Etat_courant($Mac){
 		}
 	}
 	catch (Exception $a){
+		//En cas d'erreur de connexion		
 		die ('Erreur:'.$a->getMessage());
 	}
 }
 
 
 /**
- * Fonction permettant de planifier une heure d'allumage et l'envoi des prises qui ont subit un changement au serveur WS
+ * Fonction permettant la planification horaire 
  * $Mac est un string, l'adresse mac de la multiprise du client 
- * $N_prise est un int, le num de la prise qui se modifie
- * $Nb_Ephe est un int, le num du slot qui se modifie
- * $Plannif est un string, le jour et l'heure est 
+ * $N_prise est un int, le numéro de la prise qui se modifie
+ * $Nb_Ephe est un int, le nombre d'éphémeride
+ * $Plannif est un string, il s'agit du jouer et l'heure planifié pour un changement d'etat 
+ * Return $resultat string, renvoi confirmation ou echec
  */
 function Ephemeride($Mac, $N_prise, $Nb_Ephe, $Plannif){
-	$Ip='172.17.50.156';
+	//Adresse IP du serveur WS
+	$Ip='172.17.50.152';
+	
 	//appel de la BDD
 	Base_de_donnees();
+	
 	try{
 		$ephe='Nb_Ephe_Prise'.$N_prise;
 		$prise='Prise'.$N_prise.'_E'.$Nb_Ephe;	
-		
+		// Requete sql qui selectionne la ligne en fonction de l'adresse mac
 		$requete= mysql_query("SELECT * FROM multiprise WHERE Mac='$Mac'");
+		
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
 		{
 			return "Impossible d'effectuer cette action";
 		}
 		else{
+			//requete permettant la mise a jour de la table programmation contenant les données de la planification
 			$reponse=mysql_query("UPDATE programmation SET $ephe='$Nb_Ephe', $prise='$Plannif' WHERE Mac='$Mac' ");
-
+			
+			//Le prise ayant subit une planification horaire prend la valeur 1
 			switch ($N_prise){
 				case 1:
 					$p='10000';
@@ -284,35 +293,38 @@ function Ephemeride($Mac, $N_prise, $Nb_Ephe, $Plannif){
 			}
 			
 			// Création d'un client web socket et connexion au serveur
-		//	$client = new WebsocketClient;
-		//	$client->connect($Ip, 9300, '/');
-			// Renvoi # et l'adresse Mac de la multiprise modifiée
-		//	$client->sendData("#$Mac$p");
+			$client = new WebsocketClient;
+			$client->connect($Ip, 9300, '/');
+			// Renvoi "#" + l'adresse Mac + la prise qui a subbit le changement
+			$client->sendData("#$Mac$p");
 			
 			return "Programmation de la prise effectuée";
 		}
 	}
 	catch (Exception $a){
+		//En cas d'erreur de connexion		
 		die ('Erreur:'.$a->getMessage());
 	}
 }
 
 
 /**
- * Fonction permettant le renvoi les heures plannifiees
+ * Fonction permettant le renvoi des heures plannifiees
  * $Mac est un string, l'adresse mac de la multiprise du client 
- * $N_prise est un int, le num de la prise qui se modifie
- * $Nb_Ephe est un int, le num du slot qui se modifie
- * Return string, l'etat des prises sont renvoyés au client
+ * $N_prise est un int, le numéro de la prise qui se modifie
+ * $Nb_Ephe est un int, le nombre d'éphémeride
+ * Return $resultat string, renvoi confirmation ou echec
  */
 function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 	//appel de la BDD
 	Base_de_donnees();
+	
 	try{
 		$ephe='Nb_Ephe_Prise'.$N_Prise;
 		$prise='Prise'.$N_Prise.'_E'.$Nb_Ephe;	
-		// Requete sql pour récuperer les états des prises
+		// Requete sql qui selectionne la ligne en fonction de l'adresse mac
 		$requete= mysql_query("SELECT * FROM programmation WHERE Mac='$Mac'");
+		
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
 		{
@@ -320,6 +332,7 @@ function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 		}
 		else
 		{
+			//changement de case en fonction du nombre de l'ephemeride que le client choisi
 			switch($Nb_Ephe){
 			case 1:
 				while ($row = mysql_fetch_assoc($requete)){
@@ -356,6 +369,7 @@ function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 		}
 	}
 	catch (Exception $a){
+		//En cas d'erreur de connexion	
 		die ('Erreur:'.$a->getMessage());
 	}
 }
@@ -363,11 +377,8 @@ function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 
 /**
  * Fonction permettant au client de consulter l'historique 
- * $Identifiant est un string, nom du client
  * $Mac est un string, l'adresse mac de la multiprise du client 
- * $N_Prise est int, le numero de la prise
- * $Etat est un boolean, designe l etat de la prise
- * Return string
+ * Return $resultat string, renvoi confirmation ou echec
  */
  function Historique($Mac) {
 
@@ -375,8 +386,9 @@ function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 	Base_de_donnees();
 	try{
 
-		// Requete sql pour recuperer l'historique
+		//requete qui efface l'historique datant de plus de 7 jours
 		$delhistorique = mysql_query("DELETE FROM historique WHERE Date >= DateExpiration");
+		// Requete sql pour recuperer l'historique
 		$requete= mysql_query("SELECT * FROM historique WHERE Mac='$Mac'");
 		// Vérification du contenu de la requete
 		if(mysql_num_rows($requete)==0)
@@ -384,7 +396,7 @@ function Etat_courant_ephe($Mac, $N_Prise, $Nb_Ephe){
 			return "Il n'y a actuellement pas d'historique";
 		}
 		else{
-			
+			//concaténation des etats des prises avec sa date du changement  
 			while ($row = mysql_fetch_assoc($requete)) {
 				$resultat.=($resultat==""?"":"," ).$row['EtatBool1'].$row['EtatBool2'].$row['EtatBool3'].$row['EtatBool4'].$row['EtatBool5'].' '.$row['Date'];
 			}
@@ -405,8 +417,8 @@ ini_set("soap.wsdl_cache_enabled", "0");
 
 // Catch l'erreur si l'instanciation la classe SoapServer échoue, on retourne l'erreur
 try {
-	// APPEL DE LA WSDL
-	$server = new SoapServer('wsdl.wsdl');
+	// Appel de la wsdl
+	$server = new SoapServer('GetServerService.wsdl');
   
 	// Les méthodes que le serveur va gérer
 	$server->addFunction("Modification");
@@ -429,7 +441,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
  
 else {
-//Print("Nous sommes le $date et il est $heure");
+$date = date("d-m-Y");
+$heure = date("H:i");
+Print("Nous sommes le $date et il est $heure");
   echo '<ul>';
   echo '<strong>Fonctions du serveur: </strong>';
   echo '<ul>';

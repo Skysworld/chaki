@@ -1,0 +1,202 @@
+<?xml version ="1.0" encoding ="UTF-8" ?> 
+<definitions 
+xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns="http://schemas.xmlsoap.org/wsdl/"
+xmlns:s0="urn:GetServerService"
+xmlns:tns="http://172.17.50.152/SOAP/server.php" 
+xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+targetNamespace="urn:GetServerService">
+
+<types>
+    <xsd:schema elementFormDefault="unqualified" targetNamespace="urn:GetServerService">
+      <xsd:simpleType name="WLChar">
+        <xsd:restriction base="xsd:string">
+          <xsd:length value="1" fixed="true"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:schema>
+  </types>
+  
+  
+	<message name="GetServerService_GetModificationRequest"> 
+	  <part name="Identification" type="xsd:string"/>
+	  <part name="Mac" type="xsd:string"/>
+	  <part name="N_prise" type="xsd:int"/>
+	  <part name="Etat" type="xsd:boolean"/>
+	</message> 
+	<message name="GetServerService_GetModificationResponse"> 
+	  <part name="resultat" type="xsd:string"/> 
+	</message> 
+	<message name="GetServerService_GetAuthRequest"> 
+	  <part name="Id" type="xsd:string"/>
+	  <part name="Password" type="xsd:string"/>
+	</message> 
+	<message name="GetServerService_GetAuthResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message> 
+	<message name="GetServerService_GetPassRequest"> 
+	  <part name="Id" type="xsd:string"/>
+	  <part name="NewPassword" type="xsd:string"/>
+	  <part name="Password" type="xsd:string"/>	  	  
+	</message> 
+	<message name="GetServerService_GetPassResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message> 
+	<message name="GetServerService_GetPassInitRequest"> 
+	  <part name="Identifiant" type="xsd:string"/>
+	  <part name="NewPassword" type="xsd:string"/>
+	  <part name="Password" type="xsd:string"/>
+	</message> 
+	<message name="GetServerService_GetPassInitResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message> 
+	<message name="GetEtatRequest">
+	  <part name="Mac2" type="xsd:string"/>
+	</message> 
+	<message name="GetEtatResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message> 
+	<message name="GetEpheRequest">
+	  <part name="Mac" type="xsd:string"/>
+	  <part name="N_prise" type="xsd:int"/>
+	  <part name="Nb-Ephe" type="xsd:int"/>
+	  <part name="Plannif" type="xsd:string"/>
+	</message> 
+	<message name="GetEpheResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message>
+	<message name="GetEtatEpheRequest">
+	  <part name="Mac" type="xsd:string"/>
+	  <part name="N_prise" type="xsd:int"/>
+	  <part name="Nb-Ephe" type="xsd:int"/>
+	</message> 
+	<message name="GetEtatEpheResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message>
+	<message name="GetServerService_GetHistoriqueRequest">
+	  <part name="Mac3" type="xsd:string"/>
+	</message> 
+	<message name="GetServerService_GetHistoriqueResponse"> 
+	  <part name="resultat" type="xsd:string"/>
+	</message>
+	
+	
+	<portType name="GetServerPortType"> 
+	  <operation name="Modification"> 
+	    <input message="s0:GetServerService_GetModificationRequest"/> 
+	    <output message="s0:GetServerService_GetModificationResponse"/> 
+	  </operation> 
+	  <operation name="Authentification"> 
+	    <input message="s0:GetServerService_GetAuthRequest"/> 
+	    <output message="s0:GetServerService_GetAuthResponse"/> 
+	  </operation>
+	  <operation name="Mot_de_passe"> 
+	    <input message="s0:GetServerService_GetPassRequest"/> 
+	    <output message="s0:GetServerService_GetPassResponse"/> 
+	  </operation>
+	   <operation name="Reinitialisation"> 
+	    <input message="s0:GetServerService_GetPassInitRequest"/> 
+	    <output message="s0:GetServerService_GetPassInitResponse"/> 
+	  </operation>
+	  <operation name="Etat_courant"> 
+	    <input message="s0:GetEtatRequest"/> 
+	    <output message="s0:GetEtatResponse"/> 
+	  </operation>
+	  <operation name="Ephemeride"> 
+	    <input message="s0:GetEpheRequest"/> 
+	    <output message="s0:GetEpheResponse"/> 
+	  </operation>
+	  <operation name="Etat_courant_ephe"> 
+	    <input message="s0:GetEtatEpheRequest"/> 
+	    <output message="s0:GetEtatEpheResponse"/> 
+	  </operation>
+	  <operation name="Historique"> 
+	    <input message="s0:GetServerService_GetHistoriqueRequest"/> 
+	    <output message="s0:GetServerService_GetHistoriqueResponse"/> 
+	  </operation>
+	</portType> 
+	
+	<binding name="GetServerBinding" type="s0:GetServerPortType"> 
+	  <soap:binding  transport="http://schemas.xmlsoap.org/soap/http" style="document"/> 
+	  <operation name="Modification"> 
+	    <soap:operation soapAction="GetServerService_Modification" style="document"/> 
+	    <input>
+		<soap:body use="literal"/>
+	    </input> 
+	    <output>
+		<soap:body use="literal"/>
+	    </output> 
+	  </operation>
+	  <operation name="Authentification"> 
+	    <soap:operation soapAction="urn:GetServerService_Authentification" style="document"/> 
+	    <input> 
+	      <soap:body use="literal"/>
+	    </input> 
+	    <output> 
+	     <soap:body use="literal"/>
+	    </output> 
+	  </operation>
+	  <operation name="Mot_de_passe"> 
+	    <soap:operation soapAction="urn:GetServerService_Mot_de_passe" style="document"/> 
+	    <input> 
+		<soap:body use="literal"/>
+	    </input> 
+	    <output> 
+		<soap:body use="literal"/>
+	    </output> 
+	  </operation>
+	  <operation name="Reinitialisation"> 
+	    <soap:operation soapAction="urn:GetServerService_Reinitialisation" style="document"/> 
+	    <input> 
+	      <soap:body use="literal"/>
+	    </input> 
+	    <output> 
+	      <soap:body use="literal"/>
+	    </output> 
+	  </operation>	  
+	  <operation name="Etat_courant"> 
+	    <soap:operation soapAction="urn:Etat_courant" style="document"/> 
+	    <input> 
+		<soap:body use="literal"/>
+	    </input> 
+	    <output> 
+		<soap:body use="literal"/>
+	    </output> 
+	  </operation>
+	  <operation name="Ephemeride"> 
+	    <soap:operation soapAction="urn:Ephemeride" style="document"/> 
+	    <input> 
+		<soap:body use="literal"/>
+	    </input> 
+	    <output> 
+		<soap:body use="literal"/>
+	    </output> 
+	  </operation>	 
+	  <operation name="Etat_courant_ephe"> 
+	    <soap:operation soapAction="urn:Etat_courant_Ephe" style="document"/> 
+	    <input>
+		<soap:body use="literal"/>
+	    </input> 
+	    <output> 
+		<soap:body use="literal"/>
+	    </output> 
+	  </operation>
+	  <operation name="Historique"> 
+	    <soap:operation soapAction="urn:GetServerService_Historique" style="document"/> 
+	    <input> 
+	      <soap:body use="literal"/> 
+	    </input> 
+	    <output> 
+	     <soap:body use="literal"/>
+	    </output> 
+	  </operation>
+	</binding> 
+	
+	<service name="GetServerService"> 
+	  <port name="urn:GetServerPort" binding="s0:GetServerBinding"> 
+	    <soap:address location="http://172.17.50.152/webservice/server.php"/> 
+	  </port> 
+	</service> 
+</definitions>
